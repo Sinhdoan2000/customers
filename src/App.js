@@ -15,8 +15,8 @@ import Customers from './Customers'
 function App() {
 
   const defaultState = useRef({
-    emailFieldValue: "dharma@jadedpixel.com",
-    nameFieldValue: "Jaded Pixel"
+    emailFieldValue: "Sinhdoan@globosoftware.net",
+    nameFieldValue: "Sinh doan"
   });
   const skipToContentRef = useRef(null);
 
@@ -122,9 +122,9 @@ function App() {
   const userMenuMarkup = (
     <TopBar.UserMenu
       actions={userMenuActions}
-      name="Dharma"
+      name="Sinh Globo"
       detail={storeName}
-      initials="D"
+      initials="S"
       open={userMenuActive}
       onToggle={toggleUserMenuActive}
     />

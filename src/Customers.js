@@ -309,9 +309,7 @@ function Customers(){
             <IndexTable
               resourceName={resourceName}
               itemCount={dataCustomers.length}
-              selectedItemsCount={
-                allResourcesSelected ? 'All' : selectedResources.length
-              }
+              selectedItemsCount={ allResourcesSelected ? 'All' : selectedResources.length }
               onSelectionChange={handleSelectionChange}
               bulkActions={bulkActions}
               promotedBulkActions={promotedBulkActions}
