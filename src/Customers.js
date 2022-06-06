@@ -185,7 +185,7 @@ function Customers(){
             const data = JSON.parse(jsonData);
             if(data){
                 const id = dataCustomers[dataCustomers.length - 1] ? Number(dataCustomers[dataCustomers.length - 1].id) + 1 : '0';
-                const status = selected == "Account active" ?  <Badge status="success">{selected}</Badge> :  <Badge>{selected}</Badge>
+                const status = selected == "Account active" ?  <Badge status="success">{selected}</Badge> : selected != "Invitation sent" ? <Badge>{selected}</Badge> : <Badge status="info">{selected}</Badge>;
                 const newData = {
                         id: id.toString(),
                         url: 'customers/' + id,
@@ -210,7 +210,8 @@ function Customers(){
     const handleSelectChange = useCallback((value) => setSelected(value), []);
     const options = [
         {label: 'Account active', value: 'Account active'},
-        {label: 'Account not active', value: 'Account not active'}
+        {label: 'Account not active', value: 'Account not active'},
+        {label: 'Invitation sent', value: 'Invitation sent'}
       ];
 
     const modalAddCustomer = (
@@ -254,7 +255,7 @@ function Customers(){
                             error={touched.email && errors.email}
                         />  
                         <Select
-                            label="Date range"
+                            label="Account status"
                             options={options}
                             onChange={handleSelectChange}
                             value={selected}
