@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback} from 'react';
+import React,{ useState, useEffect, useCallback, useRef} from 'react';
 import '@shopify/polaris/build/esm/styles.css';
-import {Page, Card, IndexTable, TextStyle, useIndexResourceState, Select, Icon, Button, Modal, 
-TextContainer, Badge, Form, FormLayout, TextField, EmptySearchResult} from '@shopify/polaris';
+import {Page, Card, IndexTable, TextStyle, useIndexResourceState, Select, Button, Modal, 
+TextContainer, Badge, Form, FormLayout, TextField, EmptySearchResult, ChoiceList, Filters, Grid, OptionList, Icon, ActionList} from '@shopify/polaris';
+import { CustomersMajor,EmailMajor, FormsMajor, CalendarMinor, HashtagMajor, TabletMajor, GrammarMajor, CodeMajor, SortMinor} from "@shopify/polaris-icons";
 import { useFormik } from "formik";
-import * as Yup from "yup";
+import * as Yup from "yup"; 
 import './index.css'
 
     let SignupSchema = Yup.object().shape({
@@ -13,73 +14,152 @@ import './index.css'
         .required("Required"),
         email: Yup.string().email("Invalid email").required("Required"),
         phone: Yup.number().min(100000000, 'Invalid phone number').max(10000000000, 'Invalid phone number').required(),
+        note: Yup.string()
+        .required("Required")
     });
-
 function Customers(){
     const customers = [
         {
-        id: '3411',
-        url: 'customers/341',
-        firstName: <Button plain>Mae Jemison</Button>,
-        email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
-        accountStatus: <Badge status="success">Account active</Badge>,
-        phone: <Button plain>+84615702</Button>,
-        createAt: 'Septemper 17, 2021 09:41 AM+07 (8 months ago)'
+          id: '3411',
+          url: 'customers/341',
+          firstName: <Button plain>Mae Jemison</Button>,
+          email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
+          accountStatus: <Badge status="success">Account active</Badge>,
+          phone: <Button plain>+84615702</Button>,
+          createAt: 'Septemper 17, 2021 09:41 AM+07 (8 months ago)',
+          lastUpdateAt: " ",
+          note: " ",
+          tags: " ",
+          acceptsMarketing: " ",
+          numberOfOrders: " "
         },
         {
-        id: '2561',
-        url: 'customers/256',
-        firstName: <Button plain>Ellen Ochoa</Button>,
-        email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
-        accountStatus: <Badge status="success">Account active</Badge>,
-        phone: <Button plain>+84615702</Button>,
-        createAt: 'October 14, 2022 19:41 PM+07 (2 years ago)'
+          id: '2561',
+          url: 'customers/256',
+          firstName: <Button plain>Ellen Ochoa</Button>,
+          email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
+          accountStatus: <Badge status="success">Account active</Badge>,
+          phone: <Button plain>+84615702</Button>,
+          createAt: 'October 14, 2022 19:41 PM+07 (2 years ago)',
+          lastUpdateAt: "",
+          note: "",
+          tags: "",
+          acceptsMarketing: "",
+          numberOfOrders: ""
         },
     ];
     const resourceName = {
         singular: 'customer',
         plural: 'customers',
     };
+    const headings = [
+      {title: 'Create at'},
+      {title: 'Phone'},
+      {title: 'Account status'},
+      {title: 'Email'},
+      {title: 'First name'},
+    ]
+    const LabelConfigureOption = (props)=>{
+      let urlSource = props.source;
+      let title = props.title;
+      return <div style={{display: "flex"}}><Icon source={urlSource} color="base" /> <span style={{margin: "0 10px"}}>{title}</span></div>
+    }
+    const optionConfigModal = [
+      {value: 'First name', label: <LabelConfigureOption source={CustomersMajor} title="First name (first_name)"/> },
+      {value: 'Last name', label:  <LabelConfigureOption source={CustomersMajor} title="Last name (last_name)" />},
+      {value: 'Email', label: <LabelConfigureOption source={EmailMajor} title="Email (email)" />},
+      {value: 'Account status', label: <LabelConfigureOption source={FormsMajor} title="Account status (state)" />},
+      {value: 'Last update at', label: <LabelConfigureOption source={CalendarMinor} title="Last updated at (update_at)" />},
+      {value: 'Shopify customer id', label: <LabelConfigureOption source={HashtagMajor} title="Shopify customer id (shopify_id)" />},
+      {value: 'Phone', label: <LabelConfigureOption source={TabletMajor} title="Phone (phone)" />},
+      {value: 'Create at', label: <LabelConfigureOption source={CalendarMinor} title="Created at (create_at)" />},
+      {value: 'Note', label: <LabelConfigureOption source={FormsMajor} title="Note (note)" />},
+      {value: 'Tags', label: <LabelConfigureOption source={GrammarMajor} title="Tags (tags)" />},
+      {value: 'Accepts marketing', label: <LabelConfigureOption source={CodeMajor} title="Accepts marketing (accepts_marketing)" />},
+      {value: 'Number of orders', label: <LabelConfigureOption source={HashtagMajor} title="Number of orders (orders_count)" />},
+    ]
     const [dataCustomers, setDataCustomers] = useState(customers);
+    const [queryValue, setQueryValue] = useState("");
+    const appliedFilters = [];
     const {selectedResources, allResourcesSelected, handleSelectionChange} = useIndexResourceState(dataCustomers);
+    const [selectedSort, setSelectedSort] = useState(['lastUpdate']);
+    const [selectedSortText, setSelectedSortText] = useState(['A - Z']);
+    const [headerTable, setHeadingTable] = useState(headings);
+    const [optionConfig, setOptionConfig] = useState(optionConfigModal);
+    const [dataHeadings, setDataHeading] = useState(headings);
+    const handleSortChange =(value) => {
+      setSelectedSort(value)
+    };
+
+      //handle sort data
+    const sortAZ = (a, b)=>{
+      return a.firstName.props.children > b.firstName.props.children ? 1 : -1;
+    }
+    const sortZA = (a, b) =>{
+      return a.firstName.props.children > b.firstName.props.children ? -1 : 1;
+    }
+    const handleSoft = ()=>{
+      if(selectedSortText == 'A - Z'){
+        dataCustomers.sort(sortAZ);
+        setDataCustomers(dataCustomers);
+      }else if(selectedSortText == 'Z - A'){
+        dataCustomers.sort(sortZA);
+        setDataCustomers(dataCustomers);
+      }
+    }
+    const handleSortChangeText = (value) => {
+      setSelectedSortText(value);
+      handleSoft()
+    };
     const emptyStateMarkup = (
         <EmptySearchResult
           title={'No customers yet'}
           description={'Try changing the filters or search term'}
           withIllustration
         />
-      );
+    );
+   
+    const test = dataHeadings.reverse();
+    const dataConfigRender = {}
+    test.forEach(item=>{
+      let myStr = item.title.split(" ");
+      for(var i = 0; i< myStr.length; i++){
+        if(i != 0){
+          myStr[i] = myStr[i][0].toUpperCase() + myStr[i].slice(1);
+        }else{
+          myStr[i] = myStr[i][0].toLowerCase() + myStr[i].slice(1);
+        }
+      }
+      let newStr = myStr.join('');    
+      dataConfigRender[newStr] = item.title;
+    })
+   
     const rowMarkup = dataCustomers.map(
-        ({id, firstName, email, accountStatus, phone, createAt}, index) => (
+        ({id, firstName, email, accountStatus, phone, createAt, lastUpdateAt, note, tags, acceptsMarketing, numberOfOrders}, index) => (
         <IndexTable.Row
             id={id}
             key={id}
             selected={selectedResources.includes(id)}
             position={index}
         >
-            <IndexTable.Cell>
-            <TextStyle>{firstName}</TextStyle>
-            </IndexTable.Cell>
-            <IndexTable.Cell>{email}</IndexTable.Cell>
-            <IndexTable.Cell>{accountStatus}</IndexTable.Cell>
-            <IndexTable.Cell>{phone}</IndexTable.Cell>
-            <IndexTable.Cell>{createAt}</IndexTable.Cell>
-        </IndexTable.Row>
+          {dataConfigRender.firstName ?  <IndexTable.Cell title="First name"><TextStyle>{firstName}</TextStyle> </IndexTable.Cell> : '' }
+          {dataConfigRender.email ? <IndexTable.Cell title="Email">{email}</IndexTable.Cell> : ''}
+          {dataConfigRender.accountStatus ? <IndexTable.Cell title="Account status">{accountStatus}</IndexTable.Cell> : ''}
+          {dataConfigRender.phone ? <IndexTable.Cell title="Phone">{phone}</IndexTable.Cell> : ''}
+          {dataConfigRender.createAt ? <IndexTable.Cell title="Create at">{createAt}</IndexTable.Cell> : ''}
+          {dataConfigRender.lastUpdateAt ? <IndexTable.Cell title="Last update at">{lastUpdateAt}</IndexTable.Cell> : ''}
+          {dataConfigRender.note ?  <IndexTable.Cell title="Note">{note}</IndexTable.Cell> : ''}
+          {dataConfigRender.tags ?   <IndexTable.Cell title="Tags">{tags}</IndexTable.Cell> : ''}
+          {dataConfigRender.acceptsMarketing ?  <IndexTable.Cell title="Accepts marketing">{acceptsMarketing}</IndexTable.Cell> : ''}
+          {dataConfigRender.numberOfOrders ?  <IndexTable.Cell title="Number of orders">{numberOfOrders}</IndexTable.Cell> : ''}
+        </IndexTable.Row>         
         ),
     );
-
-    const [selectedColumn, setSelectedColumn] = useState('5');
-    const handleSelectChangeColumn = useCallback((value) => setSelectedColumn(value), []);
-    const optionsColumns = [
-        {label: "5" , value: "5"},
-        {label: "2" , value: "2"},
-        {label: "1" , value: "1"},
-    ];
-
+    
     const bulkActions = [
         {
             content: 'Delete customers',
-            onAction: () => setActive(true),
+            onAction: () => setActive(true)
         },
     ];
 
@@ -93,16 +173,14 @@ function Customers(){
     const [active, setActive] = useState(false);
     const [activeModalAdd, setActiveModalAdd] = useState(false);
     const handleChange = useCallback(() => setActive(!active), [active]);
-
     const handleDeleteTable = ()=>{
-        console.log(selectedResources, allResourcesSelected);
         const newData = dataCustomers.filter(function(customer){
-            return !selectedResources.includes(customer.id)
+          return !selectedResources.includes(customer.id)
         })
         if(newData){
-            setDataCustomers(newData)
+          setDataCustomers(newData);
         }else{
-            setDataCustomers([])
+          setDataCustomers([])
         }
         setActive(false);
     }
@@ -110,7 +188,7 @@ function Customers(){
             <Modal
               open={active}
               onClose={handleChange}
-              title={selectedResources.length <= 1 ? "Remove " + selectedResources.length + " customer ?" : "Remove " + selectedResources.length + " customers ?"}
+              title={selectedResources.length <= 1 ? "Delete " + selectedResources.length + " customer ?" : "Delete " + selectedResources.length + " customers ?"}
               primaryAction={{
                 content: 'Delete',
                 destructive: true,
@@ -125,12 +203,91 @@ function Customers(){
             >
               <Modal.Section>
                 <TextContainer>
-                  <p>This can’t be undone.</p>
+                  <p>Are you sure you want to delete this customer ?</p>
                 </TextContainer>
               </Modal.Section>
             </Modal>      
-      )
+    )
+    const [isOpenConfigure, setOpenConfigure] = useState(false);
+    const handleCloseConfigure = ()=> setOpenConfigure(false);
+    const [selectedConfigure, setSelectedConfigure] = useState(['First name', 'Email', 'Account status', 'Phone', 'Create at']);
+    const [ConfigurequeryValue, setConfigurequeryValue] = useState("");
+      //when checkbox config re-render
+      useEffect(()=>{
+          const newHeadings = [];
+          selectedConfigure.forEach(item=>{
+            let option = {title: item}
+            newHeadings.unshift(option)
+          })
+          setDataHeading(newHeadings);
+      }, [selectedConfigure])
+    const handleDoneConfigure = ()=>{
+        setHeadingTable(dataHeadings);
+        setOpenConfigure(false);
+    }
 
+    const handleFilterConfig = (data, value)=>{
+      const resultData = data.filter(function(item){
+        return item.value.toLowerCase().search(value.toLowerCase()) != -1;
+      })
+      return resultData.length > 0 ? resultData : [];
+    }
+    const handleConfigureQueryValueChange =(value) => {
+        setConfigurequeryValue(value);
+        const resultData = handleFilterConfig(optionConfig, value);         
+        if(!value){
+          setOptionConfig(optionConfigModal)
+        }else{      
+          setOptionConfig(resultData); 
+        }     
+      }
+    const handleConfigureQueryValueRemove = () => {    
+      setConfigurequeryValue("")
+      setOptionConfig(optionConfigModal);
+    };
+  
+    const handleClearAll = useCallback(() => {
+      handleQueryValueRemove();
+    }, [handleConfigureQueryValueRemove]);
+
+    const modalConfigure = (
+          <Modal
+              open={isOpenConfigure}
+              onClose={handleCloseConfigure}
+              title= "Configure data columns"
+              primaryAction={{
+                content: 'Done',
+                primary: true,
+                onAction: handleDoneConfigure,
+              }}
+              secondaryActions={[
+                {
+                  content: 'Cancel',
+                  onAction: handleCloseConfigure,
+                },
+              ]}
+            >
+              <div className='modalConfig'>
+                <Modal.Section>
+                  <div style={{padding: "10px 15px"}}>
+                    <Filters
+                      queryValue={ConfigurequeryValue}
+                      filters={[]}
+                      onQueryChange={handleConfigureQueryValueChange}
+                      onQueryClear={handleConfigureQueryValueRemove}
+                      onClearAll={handleClearAll}
+                    />
+                  </div>
+                    <OptionList
+                      onChange={setSelectedConfigure}
+                      options={optionConfig}
+                      selected={selectedConfigure}
+                      allowMultiple
+                    />
+                </Modal.Section>
+              </div>
+          </Modal>      
+    )
     const handleGetCurrentTime = ()=>{
         const date = new Date();
                 var current_month = date.getMonth();
@@ -169,15 +326,17 @@ function Customers(){
                 }
                 const currentTime = date.getHours() > 12 ? "PM" : "AM";
                 const currentMinutes = date.getMinutes() >= 10 ? date.getMinutes() : "0" + date.getMinutes();
-        const currentCalender = month_name + ' ' + date.getDate() + ', ' + date.getFullYear() + ', ' + date.getHours() + ":" + currentMinutes + " " + currentTime + " +07";
-        return currentCalender;
+                const currentGMT = date.getUTCHours() >= 10 ? date.getUTCHours() : "0" + date.getUTCHours();
+        const currentCalendar = month_name + ' ' + date.getDate() + ', ' + date.getFullYear() + ', ' + date.getHours() + ":" + currentMinutes + " " + currentTime + " +" + currentGMT;
+        return currentCalendar;
     }
-
+    
     const formik = useFormik({
         initialValues: {
         firstName: "",
         email: "",
-        phone: 0
+        phone: 0,
+        note: ""
         },
         validationSchema: SignupSchema,
         onSubmit: (values) => {
@@ -187,17 +346,19 @@ function Customers(){
                 const id = dataCustomers[dataCustomers.length - 1] ? Number(dataCustomers[dataCustomers.length - 1].id) + 1 : '0';
                 const status = selected == "Account active" ?  <Badge status="success">{selected}</Badge> : selected != "Invitation sent" ? <Badge>{selected}</Badge> : <Badge status="info">{selected}</Badge>;
                 const newData = {
-                        id: id.toString(),
-                        url: 'customers/' + id,
-                        firstName: <Button plain>{data.firstName}</Button>,
-                        email: <Button plain>{data.email}</Button>,
-                        accountStatus: status,
-                        phone: <Button plain>{data.phone}</Button>,
-                        createAt: handleGetCurrentTime()
-                    }
-                if(newData){                 
+                    id: id.toString(),
+                    url: 'customers/' + id,
+                    firstName: <Button plain>{data.firstName}</Button>,
+                    email: <Button plain>{data.email}</Button>,
+                    accountStatus: status,
+                    phone: <Button plain>{data.phone}</Button>,
+                    createAt: handleGetCurrentTime(),
+                    note: data.note
+                }
+                if(newData){               
                     dataCustomers.push(newData);
                     setActiveModalAdd(false);
+                    handleSoft();
                 }
             }
         }
@@ -235,17 +396,19 @@ function Customers(){
             >
               <Modal.Section>
                 <TextContainer>
-                <Form onSubmit={formik.handleSubmit}>
+                  <Form onSubmit={formik.handleSubmit}>
                     <FormLayout>  
-                        <TextField
+                      <Grid>
+                        <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 9, xl: 9}}>
+                          <TextField
                             value={values.firstName}
                             onChange={handleChangeRequired}
                             label="First name"
                             type="text"
                             id="firstName"
                             error={touched.firstName && errors.firstName}
-                        />
-                        <TextField
+                          />
+                          <TextField
                             value={values.email}
                             onChange={handleChangeRequired}
                             label="Email"
@@ -253,61 +416,141 @@ function Customers(){
                             autoComplete="email"
                             id="email"
                             error={touched.email && errors.email}
-                        />  
-                        <Select
+                          />  
+                        </Grid.Cell>
+                        <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 3, xl: 3}}>
+                          <Select
                             label="Account status"
                             options={options}
                             onChange={handleSelectChange}
                             value={selected}
-                        />   
-                        <TextField
+                          />   
+                          <TextField
                             label="Phone number"
                             type="number"
                             id="phone"
                             value={values.phone}
                             onChange={handleChangeRequired}
                             error={touched.phone && errors.phone}
-                        />           
+                          />  
+                        </Grid.Cell>
+                      </Grid>
+                      <TextField
+                            label="Notes"
+                            type="text"
+                            id="note"
+                            value={values.note}
+                            onChange={handleChangeRequired}
+                            error={touched.note && errors.note}
+                            multiline={5}
+                      />
                     </FormLayout>
-                </Form>
+                  </Form>
                 </TextContainer>
               </Modal.Section>
             </Modal>      
     )
-
-    useEffect(()=>{
-        setDataCustomers(dataCustomers)
-    }, [dataCustomers.length])
     
     const handleOpenModalAddCustomer = () =>{
         setActiveModalAdd(true);
-
-        //reset value field
+        //reset values fields
         values.firstName = "";
         values.email = "";
-        values.phone = 0
+        values.phone = 0;
+        values.note = "";
+    }
+    const handleFiltersQueryChange = useCallback(function (value){
+        setQueryValue(value);
+        const resultFilter = handleFilterTable(dataCustomers, value);
+          setDataCustomers(resultFilter)
+    },[]);
+
+    //Event search customer
+    const handleFilterTable  = (data, value)=>{
+      const resultData = data.filter(function(item){
+        return item.firstName.props.children.toLowerCase().search(value.toLowerCase()) != -1;
+      })
+      return resultData.length > 0 ? resultData : [];
     }
 
+    //Event Remove data value search input
+    const handleQueryValueRemove = useCallback(function() {
+      setQueryValue("");
+    }, []);
+    const handleFiltersClearAll = useCallback(() => {
+      handleQueryValueRemove();
+    }, [
+      handleQueryValueRemove,
+    ]);
+    
+    const filters = [
+      {
+        key: 'sort',
+        label: 'Sort',
+        filter: (
+            <div>
+              <ChoiceList
+                fullWidth
+                title="Sort by"
+                choices={[
+                  {label: 'Last update', value: 'lastUpdate'},
+                  {label: 'Amount spent', value: 'amountSpent'},
+                  {label: 'Total orders', value: 'totalOrders'},
+                  {label: 'Last order date', value: 'lastOrderDate'},
+                  {label: 'First order date', value: 'firstOrderDate'},
+                  {label: 'Date added as customer', value: 'dateAddedAsCustomer'},
+                  {label: 'Last abandoned order date', value: 'lastAbandonedOrderDate'},
+                ]}
+                selected={selectedSort}
+                onChange={handleSortChange}
+              /> 
+              <div style={{height: "1px", width: "100%", background: "#dfd9d9", margin: "10px 0"}}></div>
+              <ChoiceList
+                fullWidth
+                choices={[
+                  {label: 'A - Z', value: 'A - Z'},
+                  {label: 'Z - A', value: 'Z - A'},
+                ]}               
+                selected={selectedSortText}
+                onChange={handleSortChangeText}
+              /> 
+            </div>        
+        ),
+        shortcut: true,
+      }
+    ];
   return (
     <Page 
       fullWidth 
       primaryAction={{content: 'Add customer', disabled: false,  primary: true, onClick: handleOpenModalAddCustomer}}
-      title="Customers">
+      title="Customers"
+    >
         <Card>
             <div className="Polaris-Card__Header" style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
               <TextStyle variation="subdued">{"Showing " + dataCustomers.length + " of " + dataCustomers.length + " customers."}</TextStyle>
               <div className="Polaris-right-content">
                 <TextStyle variation="subdued">
-                  Showing 5 of 20 columns
-                  <Select
-                    options={optionsColumns}
-                    onChange={handleSelectChangeColumn}
-                    value={selectedColumn}
-                  />
+                  Showing {headerTable.length} of 12 columns
+                  <span style={{marginLeft: "5px"}}>
+                    <Button onClick={() => setOpenConfigure(true)}> {headerTable.length} </Button>
+                  </span>
                 </TextStyle>
               </div>
             </div>
-            <IndexTable
+            <Card.Section>        
+              <Filters
+                queryValue={queryValue}
+                filters={filters}
+                appliedFilters={appliedFilters}
+                onQueryChange={handleFiltersQueryChange}
+                onQueryClear={handleQueryValueRemove}
+                onClearAll={handleFiltersClearAll}
+                queryPlaceholder="Search customers"
+                showHeader
+              />
+            </Card.Section>
+            <IndexTable             
+              totalItemsCount={dataCustomers.length}
               resourceName={resourceName}
               itemCount={dataCustomers.length}
               selectedItemsCount={ allResourcesSelected ? 'All' : selectedResources.length }
@@ -315,22 +558,16 @@ function Customers(){
               bulkActions={bulkActions}
               promotedBulkActions={promotedBulkActions}
               emptyState={emptyStateMarkup}
-              headings={[
-                {title: 'First name'},
-                {title: 'Email'},
-                {title: 'Account status'},
-                {title: 'Phone'},
-                {title: 'Create at'},
-              ]}
+              headings={headerTable}             
             >
               {rowMarkup ? rowMarkup : ''}
               {modalDelete}
             </IndexTable>
-            {modalAddCustomer}
+              {modalAddCustomer}
+              {modalConfigure}
         </Card>
     </Page>
     )
 }
-
 
 export default Customers;

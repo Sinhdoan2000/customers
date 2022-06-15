@@ -1,15 +1,14 @@
 import './index.css';
-import { useState, useEffect, useCallback, useRef} from 'react';
+import { useState, useCallback, useRef} from 'react';
 import '@shopify/polaris/build/esm/styles.css';
 import {
-  ActionList,AppProvider,Card,ContextualSaveBar,FormLayout,Frame,Layout,Loading,Modal,Navigation,Page,SkeletonBodyText
+  ActionList,Card,ContextualSaveBar,FormLayout,Frame,Layout,Loading,Modal,Navigation,SkeletonBodyText
   ,SkeletonDisplayText,SkeletonPage,TextContainer,TextField,Toast,TopBar
 } from "@shopify/polaris";
-import { ArrowLeftMinor,ConversationMinor,HomeMajor,CustomersMajor,AppsMajor,AnalyticsMajor,TeamMajor,QuestionMarkInverseMajor} from "@shopify/polaris-icons";
+import { ArrowLeftMinor,HomeMajor,CustomersMajor,AppsMajor,AnalyticsMajor,TeamMajor,QuestionMarkInverseMajor} from "@shopify/polaris-icons";
 import {
-  BrowserRouter,
   Routes,
-  Route,
+  Route
 } from "react-router-dom";
 import Customers from './Customers'
 function App() {
@@ -28,6 +27,16 @@ function App() {
   const [userMenuActive, setUserMenuActive] = useState(false);
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
   const [modalActive, setModalActive] = useState(false);
+  const [nav, setNav] = useState(() => {
+    window.localStorage.setItem('tabs', '/');
+    const currentTab = window.localStorage.getItem('tabs');
+    return currentTab;
+  })
+  const handleChangeTabs = (tab)=>{  
+    window.localStorage.setItem('tabs', tab);
+    const currentTab = window.localStorage.getItem('tabs');
+    setNav(currentTab);
+}
   const [nameFieldValue, setNameFieldValue] = useState(
     defaultState.current.nameFieldValue
   );
@@ -57,7 +66,6 @@ function App() {
   const handleSave = useCallback(() => {
     defaultState.current.nameFieldValue = nameFieldValue;
     defaultState.current.emailFieldValue = emailFieldValue;
-
     setIsDirty(false);
     setToastActive(true);
     setStoreName(defaultState.current.nameFieldValue);
@@ -86,26 +94,18 @@ function App() {
       ),
     []
   );
-  const toggleIsLoading = useCallback(
-    () => setIsLoading((isLoading) => !isLoading),
-    []
-  );
   
   const toggleModalActive = useCallback(
     () => setModalActive((modalActive) => !modalActive),
     []
   );
 
-  const toastMarkup = toastActive ? (
-    <Toast onDismiss={toggleToastActive} content="Changes saved" />
-  ) : null;
-
+  const toastMarkup = toastActive ? <Toast onDismiss={toggleToastActive} content="Changes saved" /> : null;
   const userMenuActions = [
     {
       items: [{ content: "Community forums" }]
     }
   ];
-
   const contextualSaveBarMarkup = isDirty ? (
     <ContextualSaveBar
       message="Unsaved changes"
@@ -118,7 +118,6 @@ function App() {
     />
   ) : null;
 
-  
   const userMenuMarkup = (
     <TopBar.UserMenu
       actions={userMenuActions}
@@ -158,7 +157,6 @@ function App() {
       onNavigationToggle={toggleMobileNavigationActive}
     />
   );
-
   const navigationMarkup = (
     <Navigation location="/">
       <Navigation.Section
@@ -169,65 +167,62 @@ function App() {
           }
         ]}
       />
-      <Navigation.Section
-        separator
-        items={[
-          {
-            url: "/Home",
-            label: "Home",
-            icon: HomeMajor,
-            onClick: toggleIsLoading
-          },
-          {
-            url: "/customers",
-            label: "Customers",
-            path: "/customers",
-            icon: CustomersMajor,
-            selected: true,
-            onClick: toggleIsLoading
-          },
-          {
-            url: "/forms",
-            label: "Forms",
-            icon: AppsMajor,
-            onClick: toggleIsLoading
-          },
-          {
-            url: "/dataColumns",
-            label: "Data columns",
-            icon: AnalyticsMajor,
-            onClick: toggleIsLoading
-          },
-          {
-            url: "/Integration",
-            label: "Integrations",
-            icon: TeamMajor,
-            onClick: toggleIsLoading
-          },
-          {
-            url: "/helpAndSupport",
-            label: "Help and support",
-            icon: QuestionMarkInverseMajor,
-            onClick: toggleIsLoading
-          }
-        ]}
-        action={{
-          icon: ConversationMinor,
-          accessibilityLabel: "Contact support",
-          onClick: toggleModalActive
-        }}
-      />
+        <Navigation.Section
+          separator
+          items={[
+            {
+              url: "/",
+              label: "Home",
+              icon: HomeMajor,
+              selected: nav == "/" ? true : false,
+              onClick:() => handleChangeTabs('/')
+            },
+            {
+              url: "/customers",
+              label: "Customers",
+              icon: CustomersMajor,
+              selected: nav == "customer" ? true : false,
+              onClick:() => handleChangeTabs('customer')
+            },
+            {
+              url: "/Forms",
+              label: "Forms",
+              icon: AppsMajor,
+              selected: nav == "Forms" ? true : false,
+              onClick:() => handleChangeTabs('Forms')
+            },
+            {
+              url: "/DataColumns",
+              label: "Data columns",
+              icon: AnalyticsMajor,
+              selected: nav == "Data columns" ? true : false,
+              onClick:() => handleChangeTabs('Data columns')
+            },
+            {
+              url: "/Integrations",
+              label: "Integrations",
+              icon: TeamMajor,
+              selected: nav == "Integrations" ? true : false,
+              onClick:() => handleChangeTabs('Integrations')
+            },
+            {
+              url: "/HelpAndSupport",
+              label: "Help and support",
+              icon: QuestionMarkInverseMajor,
+              selected: nav == "Help and support" ? true : false,
+              onClick:() => handleChangeTabs('Help and support')
+            }
+          ]}
+        />
     </Navigation>
   );
 
   const loadingMarkup = isLoading ? <Loading /> : null;
  
   const actualPageMarkup = (
-    <BrowserRouter>
       <Routes>
-        <Route path="/customers" element={<Customers />}></Route>
+        <Route path="/Customers" element={<Customers />}></Route>
       </Routes>
-    </BrowserRouter>
   );
 
   const loadingPageMarkup = (
@@ -276,44 +271,9 @@ function App() {
       </Modal.Section>
     </Modal>
   );
-
+  
   return (
     <div style={{ height: "500px" }}>
-    <AppProvider
-      i18n={{
-        Polaris: {
-          Avatar: {
-            label: "Avatar",
-            labelWithInitials: "Avatar with initials {initials}"
-          },
-          ContextualSaveBar: {
-            save: "Save",
-            discard: "Discard"
-          },
-          TextField: {
-            characterCount: "{count} characters"
-          },
-          TopBar: {
-            toggleMenuLabel: "Toggle menu",
-
-            SearchField: {
-              clearButtonLabel: "Clear",
-              search: "Search"
-            }
-          },
-          Modal: {
-            iFrameTitle: "body markup"
-          },
-          Frame: {
-            skipToContent: "Skip to content",
-            navigationLabel: "Navigation",
-            Navigation: {
-              closeMobileNavigationLabel: "Close navigation"
-            }
-          }
-        }
-      }}
-    >
       <Frame
         topBar={topBarMarkup}
         navigation={navigationMarkup}
@@ -323,13 +283,11 @@ function App() {
       >
         {contextualSaveBarMarkup}
         {loadingMarkup}
-        {pageMarkup}
-       
+        {pageMarkup}       
         {toastMarkup}
         {modalMarkup}
       </Frame>
-    </AppProvider>
-  </div>
+    </div>
   );
 }
 
