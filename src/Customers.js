@@ -125,7 +125,7 @@ function Customers(){
    
     const test = dataHeadings.reverse();
     const dataConfigRender = {};
-    test.forEach((item, index)=>{
+    test.forEach((item)=>{
       let myStr = item.title.split(" ");
       for(var i = 0; i< myStr.length; i++){
         if(i != 0){
@@ -223,23 +223,27 @@ function Customers(){
       }, [selectedConfigure])
       //sắp xếp lại bảng
     const handleRenderHeadingTable = (dataConfigRender)=>{
-      console.log(dataConfigRender)
-      if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
-      if(dataConfigRender.email){  dataConfigRender.email.id = 1}
-      if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  2}
-      if(dataConfigRender.phone){ dataConfigRender.phone.id =  3}
-      if(dataConfigRender.createAt){ dataConfigRender.createAt.id =  4}
-      if(dataConfigRender.lastUpdateAt){ dataConfigRender.lastUpdateAt.id =  5}
-      if(dataConfigRender.note){ dataConfigRender.note.id =  6}
-      if(dataConfigRender.tags){ dataConfigRender.tags.id =  7}
-      if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 8}
-      if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  9}
-      if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 10}
-      const newArr = []
-      for(let key in dataConfigRender){
-        newArr.push(dataConfigRender[key])
-      }
-      setHeadingTable(newArr);
+      if(selectedConfigure.length == 0){
+        setSelectedConfigure(['First name', 'Email', 'Account status', 'Phone', 'Create at'])  
+        setHeadingTable(headings)
+      }else{
+        if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
+        if(dataConfigRender.email){  dataConfigRender.email.id = 1}
+        if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  2}
+        if(dataConfigRender.phone){ dataConfigRender.phone.id =  3}
+        if(dataConfigRender.createAt){ dataConfigRender.createAt.id =  4}
+        if(dataConfigRender.lastUpdateAt){ dataConfigRender.lastUpdateAt.id =  5}
+        if(dataConfigRender.note){ dataConfigRender.note.id =  6}
+        if(dataConfigRender.tags){ dataConfigRender.tags.id =  7}
+        if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 8}
+        if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  9}
+        if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 10}
+        const newArr = []
+        for(let key in dataConfigRender){
+          newArr.push(dataConfigRender[key])
+        }
+        setHeadingTable(newArr);
+    }
       setOpenConfigure(false);
     }
     const handleDoneConfigure = ()=>{
