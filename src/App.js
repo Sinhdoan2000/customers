@@ -2,8 +2,7 @@ import './index.css';
 import { useState, useCallback, useRef} from 'react';
 import '@shopify/polaris/build/esm/styles.css';
 import {
-  ActionList,Card,ContextualSaveBar,FormLayout,Frame,Layout,Loading,Modal,Navigation,SkeletonBodyText
-  ,SkeletonDisplayText,SkeletonPage,TextContainer,TextField,Toast,TopBar
+  ActionList,ContextualSaveBar,FormLayout,Frame,Loading,Modal,Navigation,TextField,Toast,TopBar
 } from "@shopify/polaris";
 import { ArrowLeftMinor,HomeMajor,CustomersMajor,AppsMajor,AnalyticsMajor,TeamMajor,QuestionMarkInverseMajor} from "@shopify/polaris-icons";
 import {
@@ -20,7 +19,6 @@ function App() {
   const skipToContentRef = useRef(null);
 
   const [toastActive, setToastActive] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isDirty, setIsDirty] = useState(false);
   const [searchActive, setSearchActive] = useState(false);
   const [searchValue, setSearchValue] = useState("");
@@ -217,7 +215,7 @@ function App() {
     </Navigation>
   );
 
-  const loadingMarkup = isLoading ? <Loading /> : null;
+  const loadingMarkup = <Loading /> ;
  
   const actualPageMarkup = (
       <Routes>
@@ -225,22 +223,7 @@ function App() {
       </Routes>
   );
 
-  const loadingPageMarkup = (
-    <SkeletonPage>
-      <Layout>
-        <Layout.Section>
-          <Card sectioned>
-            <TextContainer>
-              <SkeletonDisplayText size="small" />
-              <SkeletonBodyText lines={9} />
-            </TextContainer>
-          </Card>
-        </Layout.Section>
-      </Layout>
-    </SkeletonPage>
-  );
-
-  const pageMarkup = isLoading ? loadingPageMarkup : actualPageMarkup;
+  const pageMarkup = actualPageMarkup;
 
   const modalMarkup = (
     <Modal

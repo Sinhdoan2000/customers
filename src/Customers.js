@@ -53,11 +53,11 @@ function Customers(){
         plural: 'customers',
     };
     const headings = [
-      {title: 'Create at'},
-      {title: 'Phone'},
-      {title: 'Account status'},
-      {title: 'Email'},
-      {title: 'First name'},
+      {title: 'Create at', id: 4},
+      {title: 'Phone', id: 3},
+      {title: 'Account status', id: 2},
+      {title: 'Email', id: 1},
+      {title: 'First name', id: 0},
     ]
     const LabelConfigureOption = (props)=>{
       let urlSource = props.source;
@@ -84,7 +84,9 @@ function Customers(){
     const {selectedResources, allResourcesSelected, handleSelectionChange} = useIndexResourceState(dataCustomers);
     const [selectedSort, setSelectedSort] = useState(['lastUpdate']);
     const [selectedSortText, setSelectedSortText] = useState(['A - Z']);
-    const [headerTable, setHeadingTable] = useState(headings);
+    const [headerTable, setHeadingTable] = useState(headings.sort((a, b)=>{
+      return a.id < b.id ? 1 : -1;
+    }));
     const [optionConfig, setOptionConfig] = useState(optionConfigModal);
     const [dataHeadings, setDataHeading] = useState(headings);
     const handleSortChange =(value) => {
@@ -120,8 +122,8 @@ function Customers(){
     );
    
     const test = dataHeadings.reverse();
-    const dataConfigRender = {}
-    test.forEach(item=>{
+    const dataConfigRender = {};
+    test.forEach((item, index)=>{
       let myStr = item.title.split(" ");
       for(var i = 0; i< myStr.length; i++){
         if(i != 0){
@@ -131,9 +133,11 @@ function Customers(){
         }
       }
       let newStr = myStr.join('');    
-      dataConfigRender[newStr] = item.title;
+      dataConfigRender[newStr] = {
+        title: item.title,
+        id: item.id
+      };
     })
-   
     const rowMarkup = dataCustomers.map(
         ({id, firstName, email, accountStatus, phone, createAt, lastUpdateAt, note, tags, acceptsMarketing, numberOfOrders}, index) => (
         <IndexTable.Row
@@ -160,13 +164,6 @@ function Customers(){
         {
             content: 'Delete customers',
             onAction: () => setActive(true)
-        },
-    ];
-
-    const promotedBulkActions = [
-        {
-        content: 'Edit customers',
-        onAction: () => console.log('Todo: implement bulk edit'),
         },
     ];
 
@@ -221,9 +218,28 @@ function Customers(){
           })
           setDataHeading(newHeadings);
       }, [selectedConfigure])
+      //sắp xếp lại bảng
+    const handleRenderHeadingTable = (dataConfigRender)=>{
+      if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
+      if(dataConfigRender.email){  dataConfigRender.email.id = 1}
+      if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  2}
+      if(dataConfigRender.phone){ dataConfigRender.phone.id =  3}
+      if(dataConfigRender.createAt){ dataConfigRender.createAt.id =  4}
+      if(dataConfigRender.lastUpdateAt){ dataConfigRender.lastUpdateAt.id =  5}
+      if(dataConfigRender.note){ dataConfigRender.note.id =  6}
+      if(dataConfigRender.tags){ dataConfigRender.tags.id =  7}
+      if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 8}
+      if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  9}
+      if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId = 10}
+      const newArr = []
+      for(let key in dataConfigRender){
+        newArr.push(dataConfigRender[key])
+      }
+      setHeadingTable(newArr);
+      setOpenConfigure(false);
+    }
     const handleDoneConfigure = ()=>{
-        setHeadingTable(dataHeadings);
-        setOpenConfigure(false);
+      handleRenderHeadingTable(dataConfigRender)  
     }
 
     const handleFilterConfig = (data, value)=>{
@@ -556,9 +572,10 @@ function Customers(){
               selectedItemsCount={ allResourcesSelected ? 'All' : selectedResources.length }
               onSelectionChange={handleSelectionChange}
               bulkActions={bulkActions}
-              promotedBulkActions={promotedBulkActions}
               emptyState={emptyStateMarkup}
-              headings={headerTable}             
+              headings={headerTable.sort((a, b)=>{
+                return a.id < b.id ? -1 : 1;
+              })}             
             >
               {rowMarkup ? rowMarkup : ''}
               {modalDelete}
