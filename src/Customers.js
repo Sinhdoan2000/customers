@@ -32,7 +32,8 @@ function Customers(){
           tags: " ",
           acceptsMarketing: " ",
           numberOfOrders: " ",
-          shopifyCustomerid: ""
+          shopifyCustomerid: "",
+          lastName: ""
         },
         {
           id: '2561',
@@ -47,7 +48,8 @@ function Customers(){
           tags: "",
           acceptsMarketing: "",
           numberOfOrders: "",
-          shopifyCustomerid: ""
+          shopifyCustomerid: "",
+          lastName: ""
         },
     ];
     const resourceName = {
@@ -141,7 +143,7 @@ function Customers(){
       };
     })
     const rowMarkup = dataCustomers.map(
-        ({id, firstName, email, accountStatus, phone, createAt, lastUpdateAt, note, tags, acceptsMarketing, numberOfOrders}, index) => (
+        ({id, firstName, email, accountStatus, phone, createAt, lastUpdateAt, note, tags, acceptsMarketing, numberOfOrders, lastName}, index) => (
         <IndexTable.Row
             id={id}
             key={id}
@@ -159,6 +161,7 @@ function Customers(){
           {dataConfigRender.acceptsMarketing ?  <IndexTable.Cell title="Accepts marketing">{acceptsMarketing}</IndexTable.Cell> : ''}
           {dataConfigRender.numberOfOrders ?  <IndexTable.Cell title="Number of orders">{numberOfOrders}</IndexTable.Cell> : ''}
           {dataConfigRender.shopifyCustomerId ?  <IndexTable.Cell title="Shopify customer id">{id}</IndexTable.Cell> : ''}
+          {dataConfigRender.lastName ?  <IndexTable.Cell title="Shopify customer id">{lastName}</IndexTable.Cell> : ''}
         </IndexTable.Row>         
         ),
     );
@@ -239,6 +242,7 @@ function Customers(){
         if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 8}
         if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  9}
         if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 10}
+        if(dataConfigRender.lastName){dataConfigRender.lastName.id = 11}
         const newArr = []
         for(let key in dataConfigRender){
           newArr.push(dataConfigRender[key])
