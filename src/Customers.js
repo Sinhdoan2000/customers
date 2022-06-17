@@ -18,6 +18,7 @@ import './index.css'
         .required("Required")
     });
 function Customers(){
+  
     const customers = [
         {
           id: '3411',
@@ -52,10 +53,12 @@ function Customers(){
           lastName: ""
         },
     ];
+
     const resourceName = {
         singular: 'customer',
         plural: 'customers',
     };
+
     const headings = [
       {title: 'Create at', id: 4},
       {title: 'Phone', id: 3},
@@ -63,11 +66,13 @@ function Customers(){
       {title: 'Email', id: 1},
       {title: 'First name', id: 0},
     ]
+
     const LabelConfigureOption = (props)=>{
       let urlSource = props.source;
       let title = props.title;
       return <div style={{display: "flex"}}><Icon source={urlSource} color="base" /> <span style={{margin: "0 10px"}}>{title}</span></div>
     }
+
     const optionConfigModal = [
       {value: 'First name', label: <LabelConfigureOption source={CustomersMajor} title="First name (first_name)"/> },
       {value: 'Last name', label:  <LabelConfigureOption source={CustomersMajor} title="Last name (last_name)" />},
@@ -88,9 +93,11 @@ function Customers(){
     const {selectedResources, allResourcesSelected, handleSelectionChange} = useIndexResourceState(dataCustomers);
     const [selectedSort, setSelectedSort] = useState(['lastUpdate']);
     const [selectedSortText, setSelectedSortText] = useState(['A - Z']);
+
     const [headerTable, setHeadingTable] = useState(headings.sort((a, b)=>{
       return a.id < b.id ? 1 : -1;
     }));
+
     const [optionConfig, setOptionConfig] = useState(optionConfigModal);
     const [dataHeadings, setDataHeading] = useState(headings);
     const handleSortChange =(value) => {
@@ -125,6 +132,7 @@ function Customers(){
         />
     );
    
+    //thay đổi tên key object và thêm key id cho object
     const test = dataHeadings.reverse();
     const dataConfigRender = {};
     test.forEach((item)=>{
@@ -142,6 +150,7 @@ function Customers(){
         id: item.id
       };
     })
+
     const rowMarkup = dataCustomers.map(
         ({id, firstName, email, accountStatus, phone, createAt, lastUpdateAt, note, tags, acceptsMarketing, numberOfOrders, lastName}, index) => (
         <IndexTable.Row
@@ -166,6 +175,7 @@ function Customers(){
         ),
     );
     
+    //hành động xoá
     const bulkActions = [
         {
             content: 'Delete customers',
@@ -187,6 +197,8 @@ function Customers(){
         }
         setActive(false);
     }
+
+
     const modalDelete = (  
             <Modal
               open={active}
@@ -211,19 +223,24 @@ function Customers(){
               </Modal.Section>
             </Modal>      
     )
+
+
     const [isOpenConfigure, setOpenConfigure] = useState(false);
     const handleCloseConfigure = ()=> setOpenConfigure(false);
     const [selectedConfigure, setSelectedConfigure] = useState(['First name', 'Email', 'Account status', 'Phone', 'Create at']);
     const [ConfigurequeryValue, setConfigurequeryValue] = useState("");
+
       //when checkbox config re-render
-      useEffect(()=>{
+    useEffect(()=>{
           const newHeadings = [];
           selectedConfigure.forEach(item=>{
             let option = {title: item}
             newHeadings.unshift(option)
           })
           setDataHeading(newHeadings);
-      }, [selectedConfigure])
+    }, [selectedConfigure])
+
+
       //sắp xếp lại bảng
     const handleRenderHeadingTable = (dataConfigRender)=>{
       // nếu như không chọn config nào thì sẽ trả về mặc định
@@ -231,6 +248,7 @@ function Customers(){
         setSelectedConfigure(['First name', 'Email', 'Account status', 'Phone', 'Create at'])  
         setHeadingTable(headings)
       }else{
+        // gán id cho phần tử để sắp xếp bảng
         if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
         if(dataConfigRender.email){  dataConfigRender.email.id = 1}
         if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  2}
@@ -243,6 +261,8 @@ function Customers(){
         if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  9}
         if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 10}
         if(dataConfigRender.lastName){dataConfigRender.lastName.id = 11}
+
+        //chuyển đổi từ object về mảng
         const newArr = []
         for(let key in dataConfigRender){
           newArr.push(dataConfigRender[key])
@@ -251,6 +271,7 @@ function Customers(){
     }
       setOpenConfigure(false);
     }
+
     const handleDoneConfigure = ()=>{
       handleRenderHeadingTable(dataConfigRender)  
     }
@@ -261,6 +282,7 @@ function Customers(){
       })
       return resultData.length > 0 ? resultData : [];
     }
+
     const handleConfigureQueryValueChange =(value) => {
         setConfigurequeryValue(value);
         const resultData = handleFilterConfig(optionConfig, value);         
@@ -270,6 +292,7 @@ function Customers(){
           setOptionConfig(resultData); 
         }     
       }
+
     const handleConfigureQueryValueRemove = () => {    
       setConfigurequeryValue("")
       setOptionConfig(optionConfigModal);
@@ -317,6 +340,8 @@ function Customers(){
               </div>
           </Modal>      
     )
+
+    //trả về lịch thời gian hiện tại sau khi thêm 1 customer
     const handleGetCurrentTime = ()=>{
         const date = new Date();
                 var current_month = date.getMonth();
@@ -360,6 +385,7 @@ function Customers(){
         return currentCalendar;
     }
     
+    //xử lý khi form được submit
     const formik = useFormik({
         initialValues: {
         firstName: "",
@@ -392,18 +418,24 @@ function Customers(){
             }
         }
     });
+
     const handleChangeRequired = (value, id) => {
         formik.setFieldValue(id, value);
     };
+
     const { values, errors, touched } = formik;
+
     const [selected, setSelected] = useState('Account active');
+
     const handleSelectChange = useCallback((value) => setSelected(value), []);
+
     const options = [
         {label: 'Account active', value: 'Account active'},
         {label: 'Account not active', value: 'Account not active'},
         {label: 'Invitation sent', value: 'Invitation sent'}
       ];
-
+    
+    //modal thêm khách hàng
     const modalAddCustomer = (
             <Modal
               large
@@ -479,7 +511,7 @@ function Customers(){
               </Modal.Section>
             </Modal>      
     )
-    
+    //mở modal thêm khách hàng và reset lại giá trị các feilds
     const handleOpenModalAddCustomer = () =>{
         setActiveModalAdd(true);
         //reset values fields
@@ -488,6 +520,7 @@ function Customers(){
         values.phone = 0;
         values.note = "";
     }
+
     const handleFiltersQueryChange = useCallback(function (value){
         setQueryValue(value);
         const resultFilter = handleFilterTable(dataCustomers, value);
@@ -506,6 +539,7 @@ function Customers(){
     const handleQueryValueRemove = useCallback(function() {
       setQueryValue("");
     }, []);
+
     const handleFiltersClearAll = useCallback(() => {
       handleQueryValueRemove();
     }, [
@@ -548,6 +582,7 @@ function Customers(){
         shortcut: true,
       }
     ];
+
   return (
     <Page 
       fullWidth 
