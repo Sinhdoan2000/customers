@@ -1,5 +1,5 @@
 import './index.css';
-import { useState, useCallback, useRef} from 'react';
+import { useState, useCallback, useRef, useEffect} from 'react';
 import '@shopify/polaris/build/esm/styles.css';
 import {
   ActionList,ContextualSaveBar,FormLayout,Frame,Loading,Modal,Navigation,TextField,Toast,TopBar
@@ -9,7 +9,10 @@ import {
   Routes,
   Route
 } from "react-router-dom";
-import Customers from './Customers'
+import Customers from './Customers';
+
+
+
 function App() {
 
   const defaultState = useRef({
@@ -25,16 +28,13 @@ function App() {
   const [userMenuActive, setUserMenuActive] = useState(false);
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
   const [modalActive, setModalActive] = useState(false);
-  const [nav, setNav] = useState(() => {
-    window.localStorage.setItem('tabs', '/');
-    const currentTab = window.localStorage.getItem('tabs');
-    return currentTab;
-  })
+  const [nav, setNav] = useState('/');
   const handleChangeTabs = (tab)=>{  
     window.localStorage.setItem('tabs', tab);
     const currentTab = window.localStorage.getItem('tabs');
     setNav(currentTab);
 }
+
   const [nameFieldValue, setNameFieldValue] = useState(
     defaultState.current.nameFieldValue
   );
@@ -172,42 +172,44 @@ function App() {
               url: "/",
               label: "Home",
               icon: HomeMajor,
-              selected: nav == "/" ? true : false,
-              onClick:() => handleChangeTabs('/')
+              selected: window.localStorage.getItem('tabs') == 'home' || window.localStorage.getItem('tabs') == '/' ? true : false,
+              onClick:() => {
+                handleChangeTabs('home')
+              }
             },
             {
               url: "/customers",
               label: "Customers",
               icon: CustomersMajor,
-              selected: nav == "customer" ? true : false,
+              selected: window.localStorage.getItem('tabs') == "customer" ? true : false,
               onClick:() => handleChangeTabs('customer')
             },
             {
               url: "/Forms",
               label: "Forms",
               icon: AppsMajor,
-              selected: nav == "Forms" ? true : false,
+              selected: window.localStorage.getItem('tabs') == "Forms" ? true : false,
               onClick:() => handleChangeTabs('Forms')
             },
             {
               url: "/DataColumns",
               label: "Data columns",
               icon: AnalyticsMajor,
-              selected: nav == "Data columns" ? true : false,
+              selected: window.localStorage.getItem('tabs') == "Data columns" ? true : false,
               onClick:() => handleChangeTabs('Data columns')
             },
             {
               url: "/Integrations",
               label: "Integrations",
               icon: TeamMajor,
-              selected: nav == "Integrations" ? true : false,
+              selected: window.localStorage.getItem('tabs') == "Integrations" ? true : false,
               onClick:() => handleChangeTabs('Integrations')
             },
             {
               url: "/HelpAndSupport",
               label: "Help and support",
               icon: QuestionMarkInverseMajor,
-              selected: nav == "Help and support" ? true : false,
+              selected: window.localStorage.getItem('tabs') == "Help and support" ? true : false,
               onClick:() => handleChangeTabs('Help and support')
             }
           ]}
@@ -254,6 +256,8 @@ function App() {
       </Modal.Section>
     </Modal>
   );
+
+
   
   return (
     <div style={{ height: "500px" }}>

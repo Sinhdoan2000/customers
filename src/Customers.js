@@ -223,6 +223,7 @@ function Customers(){
       }, [selectedConfigure])
       //sắp xếp lại bảng
     const handleRenderHeadingTable = (dataConfigRender)=>{
+      // nếu như không chọn config nào thì sẽ trả về mặc định
       if(selectedConfigure.length == 0){
         setSelectedConfigure(['First name', 'Email', 'Account status', 'Phone', 'Create at'])  
         setHeadingTable(headings)
