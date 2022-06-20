@@ -27,7 +27,7 @@ function Customers(){
         {
           id: '3411',
           url: 'customers/3411',
-          firstName: <Button plain>Mae Jemison</Button>,
+          firstName: <Button plain>Mae</Button>,
           email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
           accountStatus: <Badge status="success">Account active</Badge>,
           phone: <Button plain>+846156702</Button>,
@@ -38,12 +38,12 @@ function Customers(){
           acceptsMarketing: "",
           numberOfOrders: "0 orders",
           shopifyCustomerid: "",
-          lastName: ""
+          lastName:  <Button plain>Jemison</Button>
         },
         {
           id: '2561',
           url: 'customers/2561',
-          firstName: <Button plain>Ellen Ochoa</Button>,
+          firstName: <Button plain>Ellen</Button>,
           email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
           accountStatus: <Badge status="success">Account active</Badge>,
           phone: <Button plain>+846156702</Button>,
@@ -54,7 +54,7 @@ function Customers(){
           acceptsMarketing: "",
           numberOfOrders: "0 orders",
           shopifyCustomerid: "",
-          lastName: ""
+          lastName: <Button plain>Ochoa</Button>
         },
     ];
 
