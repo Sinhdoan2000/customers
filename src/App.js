@@ -1,17 +1,10 @@
 import './index.css';
-import { useState, useCallback, useRef, useEffect} from 'react';
+import { useState, useCallback, useRef } from 'react';
 import '@shopify/polaris/build/esm/styles.css';
-import {
-  ActionList,ContextualSaveBar,FormLayout,Frame,Loading,Modal,Navigation,TextField,Toast,TopBar
-} from "@shopify/polaris";
-import { ArrowLeftMinor,HomeMajor,CustomersMajor,AppsMajor,AnalyticsMajor,TeamMajor,QuestionMarkInverseMajor} from "@shopify/polaris-icons";
-import {
-  Routes,
-  Route
-} from "react-router-dom";
+import { ActionList,ContextualSaveBar,FormLayout,Frame,Loading,Modal,Navigation,TextField,Toast,TopBar } from "@shopify/polaris";
+import { ArrowLeftMinor,HomeMajor,CustomersMajor,AppsMajor,AnalyticsMajor,TeamMajor,QuestionMarkInverseMajor } from "@shopify/polaris-icons";
+import { Routes,Route } from "react-router-dom";
 import Customers from './Customers';
-
-
 
 function App() {
 
@@ -29,6 +22,8 @@ function App() {
   const [mobileNavigationActive, setMobileNavigationActive] = useState(false);
   const [modalActive, setModalActive] = useState(false);
   const [nav, setNav] = useState('/');
+
+  
   const handleChangeTabs = (tab)=>{  
     window.localStorage.setItem('tabs', tab);
     const currentTab = window.localStorage.getItem('tabs');
@@ -48,14 +43,8 @@ function App() {
   const [supportSubject, setSupportSubject] = useState("");
   const [supportMessage, setSupportMessage] = useState("");
 
-  const handleSubjectChange = useCallback(
-    (value) => setSupportSubject(value),
-    []
-  );
-  const handleMessageChange = useCallback(
-    (value) => setSupportMessage(value),
-    []
-  );
+  const handleSubjectChange = useCallback((value) => setSupportSubject(value),[]);
+  const handleMessageChange = useCallback((value) => setSupportMessage(value),[]);
   const handleDiscard = useCallback(() => {
     setEmailFieldValue(defaultState.current.emailFieldValue);
     setNameFieldValue(defaultState.current.nameFieldValue);
@@ -77,14 +66,8 @@ function App() {
     setSearchValue(value);
     setSearchActive(value.length > 0);
   }, []);
-  const toggleToastActive = useCallback(
-    () => setToastActive((toastActive) => !toastActive),
-    []
-  );
-  const toggleUserMenuActive = useCallback(
-    () => setUserMenuActive((userMenuActive) => !userMenuActive),
-    []
-  );
+  const toggleToastActive = useCallback( () => setToastActive((toastActive) => !toastActive),[]);
+  const toggleUserMenuActive = useCallback( () => setUserMenuActive((userMenuActive) => !userMenuActive),[] );
   const toggleMobileNavigationActive = useCallback(
     () =>
       setMobileNavigationActive(
@@ -93,10 +76,7 @@ function App() {
     []
   );
   
-  const toggleModalActive = useCallback(
-    () => setModalActive((modalActive) => !modalActive),
-    []
-  );
+  const toggleModalActive = useCallback(() => setModalActive((modalActive) => !modalActive),[]);
 
   const toastMarkup = toastActive ? <Toast onDismiss={toggleToastActive} content="Changes saved" /> : null;
   const userMenuActions = [
@@ -156,7 +136,7 @@ function App() {
     />
   );
   const navigationMarkup = (
-    <Navigation location="/">
+    <Navigation location="home">
       <Navigation.Section
         items={[
           {

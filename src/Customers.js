@@ -1,7 +1,7 @@
-import React,{ useState, useEffect, useCallback, useRef} from 'react';
+import React,{ useState, useEffect, useCallback} from 'react';
 import '@shopify/polaris/build/esm/styles.css';
 import {Page, Card, IndexTable, TextStyle, useIndexResourceState, Select, Button, Modal, 
-TextContainer, Badge, Form, FormLayout, TextField, EmptySearchResult, ChoiceList, Filters, Grid, OptionList, Icon, ActionList} from '@shopify/polaris';
+TextContainer, Badge, Form, FormLayout, TextField, EmptySearchResult, ChoiceList, Filters, Grid, OptionList, Icon} from '@shopify/polaris';
 import { CustomersMajor,EmailMajor, FormsMajor, CalendarMinor, HashtagMajor, TabletMajor, GrammarMajor, CodeMajor, SortMinor} from "@shopify/polaris-icons";
 import { useFormik } from "formik";
 import * as Yup from "yup"; 
@@ -9,40 +9,44 @@ import './index.css'
 
     let SignupSchema = Yup.object().shape({
         firstName: Yup.string()
-        .min(2, "Too Short!")
-        .max(50, "Too Long!")
-        .required("Required"),
+          .min(2, "Too Short!")
+          .max(50, "Too Long!")
+          .required("Required"),
+        lastName: Yup.string()
+          .min(2, "Too short!")
+          .max(50, "Too long!")
+          .required("Required"),
         email: Yup.string().email("Invalid email").required("Required"),
         phone: Yup.number().min(100000000, 'Invalid phone number').max(10000000000, 'Invalid phone number').required(),
         note: Yup.string()
-        .required("Required")
+          .required("Required")
     });
 function Customers(){
-  
+
     const customers = [
         {
           id: '3411',
-          url: 'customers/341',
+          url: 'customers/3411',
           firstName: <Button plain>Mae Jemison</Button>,
           email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
           accountStatus: <Badge status="success">Account active</Badge>,
-          phone: <Button plain>+84615702</Button>,
+          phone: <Button plain>+846156702</Button>,
           createAt: 'Septemper 17, 2021 09:41 AM+07 (8 months ago)',
-          lastUpdateAt: " ",
-          note: " ",
-          tags: " ",
-          acceptsMarketing: " ",
-          numberOfOrders: " ",
+          lastUpdateAt: "",
+          note: "",
+          tags: "",
+          acceptsMarketing: "",
+          numberOfOrders: "",
           shopifyCustomerid: "",
           lastName: ""
         },
         {
           id: '2561',
-          url: 'customers/256',
+          url: 'customers/2561',
           firstName: <Button plain>Ellen Ochoa</Button>,
           email: <Button plain>Sinhdoan2000@globosoftware.net</Button>,
           accountStatus: <Badge status="success">Account active</Badge>,
-          phone: <Button plain>+84615702</Button>,
+          phone: <Button plain>+846156702</Button>,
           createAt: 'October 14, 2022 19:41 PM+07 (2 years ago)',
           lastUpdateAt: "",
           note: "",
@@ -61,9 +65,9 @@ function Customers(){
 
     const headings = [
       {title: 'Create at', id: 4},
-      {title: 'Phone', id: 3},
-      {title: 'Account status', id: 2},
-      {title: 'Email', id: 1},
+      {title: 'Phone', id: 4},
+      {title: 'Account status', id: 3},
+      {title: 'Email', id: 2},
       {title: 'First name', id: 0},
     ]
 
@@ -135,7 +139,7 @@ function Customers(){
     //thay đổi tên key object và thêm key id cho object
     const test = dataHeadings.reverse();
     const dataConfigRender = {};
-    test.forEach((item)=>{
+    test.forEach((item, index)=>{
       let myStr = item.title.split(" ");
       for(var i = 0; i< myStr.length; i++){
         if(i != 0){
@@ -160,6 +164,7 @@ function Customers(){
             position={index}
         >
           {dataConfigRender.firstName ?  <IndexTable.Cell title="First name"><TextStyle>{firstName}</TextStyle> </IndexTable.Cell> : '' }
+          {dataConfigRender.lastName ?  <IndexTable.Cell title="Shopify customer id">{lastName}</IndexTable.Cell> : ''}
           {dataConfigRender.email ? <IndexTable.Cell title="Email">{email}</IndexTable.Cell> : ''}
           {dataConfigRender.accountStatus ? <IndexTable.Cell title="Account status">{accountStatus}</IndexTable.Cell> : ''}
           {dataConfigRender.phone ? <IndexTable.Cell title="Phone">{phone}</IndexTable.Cell> : ''}
@@ -169,8 +174,7 @@ function Customers(){
           {dataConfigRender.tags ?   <IndexTable.Cell title="Tags">{tags}</IndexTable.Cell> : ''}
           {dataConfigRender.acceptsMarketing ?  <IndexTable.Cell title="Accepts marketing">{acceptsMarketing}</IndexTable.Cell> : ''}
           {dataConfigRender.numberOfOrders ?  <IndexTable.Cell title="Number of orders">{numberOfOrders}</IndexTable.Cell> : ''}
-          {dataConfigRender.shopifyCustomerId ?  <IndexTable.Cell title="Shopify customer id">{id}</IndexTable.Cell> : ''}
-          {dataConfigRender.lastName ?  <IndexTable.Cell title="Shopify customer id">{lastName}</IndexTable.Cell> : ''}
+          {dataConfigRender.shopifyCustomerId ?  <IndexTable.Cell title="Shopify customer id">{id}</IndexTable.Cell> : ''}        
         </IndexTable.Row>         
         ),
     );
@@ -187,17 +191,16 @@ function Customers(){
     const [activeModalAdd, setActiveModalAdd] = useState(false);
     const handleChange = useCallback(() => setActive(!active), [active]);
     const handleDeleteTable = ()=>{
-        const newData = dataCustomers.filter(function(customer){
+      const newData = dataCustomers.filter(function(customer){
           return !selectedResources.includes(customer.id)
-        })
-        if(newData){
-          setDataCustomers(newData);
-        }else{
+      })
+      if(newData){
+        setDataCustomers(newData);
+      }else{
           setDataCustomers([])
-        }
+      }
         setActive(false);
     }
-
 
     const modalDelete = (  
             <Modal
@@ -224,7 +227,6 @@ function Customers(){
             </Modal>      
     )
 
-
     const [isOpenConfigure, setOpenConfigure] = useState(false);
     const handleCloseConfigure = ()=> setOpenConfigure(false);
     const [selectedConfigure, setSelectedConfigure] = useState(['First name', 'Email', 'Account status', 'Phone', 'Create at']);
@@ -240,7 +242,6 @@ function Customers(){
           setDataHeading(newHeadings);
     }, [selectedConfigure])
 
-
       //sắp xếp lại bảng
     const handleRenderHeadingTable = (dataConfigRender)=>{
       // nếu như không chọn config nào thì sẽ trả về mặc định
@@ -250,17 +251,17 @@ function Customers(){
       }else{
         // gán id cho phần tử để sắp xếp bảng
         if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
-        if(dataConfigRender.email){  dataConfigRender.email.id = 1}
-        if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  2}
-        if(dataConfigRender.phone){ dataConfigRender.phone.id =  3}
-        if(dataConfigRender.createAt){ dataConfigRender.createAt.id =  4}
-        if(dataConfigRender.lastUpdateAt){ dataConfigRender.lastUpdateAt.id =  5}
-        if(dataConfigRender.note){ dataConfigRender.note.id =  6}
-        if(dataConfigRender.tags){ dataConfigRender.tags.id =  7}
-        if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 8}
-        if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  9}
-        if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 10}
-        if(dataConfigRender.lastName){dataConfigRender.lastName.id = 11}
+        if(dataConfigRender.email){  dataConfigRender.email.id = 2}
+        if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  3}
+        if(dataConfigRender.phone){ dataConfigRender.phone.id =  4}
+        if(dataConfigRender.createAt){ dataConfigRender.createAt.id =  5}
+        if(dataConfigRender.lastUpdateAt){ dataConfigRender.lastUpdateAt.id =  6}
+        if(dataConfigRender.note){ dataConfigRender.note.id =  7}
+        if(dataConfigRender.tags){ dataConfigRender.tags.id =  8}
+        if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 9}
+        if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  10}
+        if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 11}
+        if(dataConfigRender.lastName){dataConfigRender.lastName.id = 1}
 
         //chuyển đổi từ object về mảng
         const newArr = []
@@ -389,6 +390,7 @@ function Customers(){
     const formik = useFormik({
         initialValues: {
         firstName: "",
+        lastName: "",
         email: "",
         phone: 0,
         note: ""
@@ -408,7 +410,8 @@ function Customers(){
                     accountStatus: status,
                     phone: <Button plain>{data.phone}</Button>,
                     createAt: handleGetCurrentTime(),
-                    note: data.note
+                    note: data.note,
+                    lastName: <Button plain>{data.lastName}</Button>
                 }
                 if(newData){               
                     dataCustomers.push(newData);
@@ -470,6 +473,14 @@ function Customers(){
                             error={touched.firstName && errors.firstName}
                           />
                           <TextField
+                            value={values.lastName}
+                            onChange={handleChangeRequired}
+                            label="Last name"
+                            type="text"
+                            id="lastName"
+                            error={touched.lastName && errors.lastName}
+                          />
+                          <TextField
                             value={values.email}
                             onChange={handleChangeRequired}
                             label="Email"
@@ -511,6 +522,7 @@ function Customers(){
               </Modal.Section>
             </Modal>      
     )
+
     //mở modal thêm khách hàng và reset lại giá trị các feilds
     const handleOpenModalAddCustomer = () =>{
         setActiveModalAdd(true);
@@ -549,11 +561,10 @@ function Customers(){
     const filters = [
       {
         key: 'sort',
-        label: 'Sort',
+        label: <div style={{display: "flex", alignItems: "center"}}><Icon  source={SortMinor} color="base" /> Sort</div>,
         filter: (
             <div>
               <ChoiceList
-                fullWidth
                 title="Sort by"
                 choices={[
                   {label: 'Last update', value: 'lastUpdate'},
@@ -569,7 +580,6 @@ function Customers(){
               /> 
               <div style={{height: "1px", width: "100%", background: "#dfd9d9", margin: "10px 0"}}></div>
               <ChoiceList
-                fullWidth
                 choices={[
                   {label: 'A - Z', value: 'A - Z'},
                   {label: 'Z - A', value: 'Z - A'},
@@ -582,7 +592,7 @@ function Customers(){
         shortcut: true,
       }
     ];
-
+  
   return (
     <Page 
       fullWidth 
@@ -594,7 +604,7 @@ function Customers(){
               <TextStyle variation="subdued">{"Showing " + dataCustomers.length + " of " + dataCustomers.length + " customers."}</TextStyle>
               <div className="Polaris-right-content">
                 <TextStyle variation="subdued">
-                  Showing {headerTable.length} of 12 columns
+                  Showing {headerTable.length} of {optionConfigModal.length} columns
                   <span style={{marginLeft: "5px"}}>
                     <Button onClick={() => setOpenConfigure(true)}> {headerTable.length} </Button>
                   </span>
