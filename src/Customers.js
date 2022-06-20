@@ -134,7 +134,7 @@ function Customers(){
         />
     );
    
-    //thay đổi tên key object và thêm key id cho object
+    //change key name object and add key id for object
     const test = dataHeadings.reverse();
     const dataConfigRender = {};
     test.forEach((item)=>{
@@ -177,7 +177,7 @@ function Customers(){
         ),
     );
     
-    //hành động xoá
+    //handle delete
     const bulkActions = [
         {
             content: 'Delete customers',
@@ -240,14 +240,14 @@ function Customers(){
           setDataHeading(newHeadings);
     }, [selectedConfigure])
 
-      //sắp xếp lại bảng
+      //sort table
     const handleRenderHeadingTable = (dataConfigRender)=>{
-      // nếu như không chọn config nào thì sẽ trả về mặc định
+      // if don't choose any config is will return default 
       if(selectedConfigure.length == 0){
         setSelectedConfigure(['First name', 'Email', 'Account status', 'Phone', 'Create at'])  
         setHeadingTable(headings)
       }else{
-          // gán id cho phần tử để sắp xếp bảng
+          // set id for elemet to sort table
           if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
           if(dataConfigRender.lastName){dataConfigRender.lastName.id = 1}
           if(dataConfigRender.email){  dataConfigRender.email.id = 2}
@@ -340,7 +340,7 @@ function Customers(){
           </Modal>      
     )
 
-    //trả về lịch thời gian hiện tại sau khi thêm 1 customer
+    //return current time calendar after add 1 customer
     const handleGetCurrentTime = ()=>{
         const date = new Date();
                 var current_month = date.getMonth();
@@ -384,7 +384,7 @@ function Customers(){
         return currentCalendar;
     }
     
-    //xử lý khi form được submit
+    //handle form submit
     const formik = useFormik({
         initialValues: {
         firstName: "",
@@ -437,7 +437,7 @@ function Customers(){
         {label: 'Invitation sent', value: 'Invitation sent'}
       ];
     
-    //modal thêm khách hàng
+    //modal add customer
     const modalAddCustomer = (
             <Modal
               large
@@ -522,7 +522,7 @@ function Customers(){
             </Modal>      
     )
 
-    //mở modal thêm khách hàng và reset lại giá trị các feilds
+    //open modal add customer and reset again value feilds
     const handleOpenModalAddCustomer = () =>{
         setActiveModalAdd(true);
         //reset values fields
