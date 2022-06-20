@@ -17,9 +17,7 @@ import './index.css'
           .max(50, "Too long!")
           .required("Required"),
         email: Yup.string().email("Invalid email").required("Required"),
-        phone: Yup.number().min(100000000, 'Invalid phone number').max(10000000000, 'Invalid phone number').required(),
-        note: Yup.string()
-          .required("Required")
+        phone: Yup.number().min(100000000, 'Invalid phone number').max(10000000000, 'Invalid phone number').required()
     });
 function Customers(){
 
@@ -139,7 +137,7 @@ function Customers(){
     //thay đổi tên key object và thêm key id cho object
     const test = dataHeadings.reverse();
     const dataConfigRender = {};
-    test.forEach((item, index)=>{
+    test.forEach((item)=>{
       let myStr = item.title.split(" ");
       for(var i = 0; i< myStr.length; i++){
         if(i != 0){
@@ -159,7 +157,7 @@ function Customers(){
         ({id, firstName, email, accountStatus, phone, createAt, lastUpdateAt, note, tags, acceptsMarketing, numberOfOrders, lastName}, index) => (
         <IndexTable.Row
             id={id}
-            key={id}
+            key={id + createAt + firstName + lastName}
             selected={selectedResources.includes(id)}
             position={index}
         >
@@ -497,7 +495,7 @@ function Customers(){
                             value={values.note}
                             onChange={handleChangeRequired}
                             error={touched.note && errors.note}
-                            multiline={5}
+                            multiline={4}
                           />
                         </Grid.Cell>
                         <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 3, xl: 3}}>
@@ -516,8 +514,7 @@ function Customers(){
                             error={touched.phone && errors.phone}
                           />  
                         </Grid.Cell>
-                      </Grid>
-                      
+                      </Grid>                    
                     </FormLayout>
                   </Form>
                 </TextContainer>
