@@ -249,21 +249,21 @@ function Customers(){
         setSelectedConfigure(['First name', 'Email', 'Account status', 'Phone', 'Create at'])  
         setHeadingTable(headings)
       }else{
-        // gán id cho phần tử để sắp xếp bảng
-        if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
-        if(dataConfigRender.lastName){dataConfigRender.lastName.id = 1}
-        if(dataConfigRender.email){  dataConfigRender.email.id = 2}
-        if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  3}
-        if(dataConfigRender.phone){ dataConfigRender.phone.id =  4}
-        if(dataConfigRender.createAt){ dataConfigRender.createAt.id =  5}
-        if(dataConfigRender.lastUpdateAt){ dataConfigRender.lastUpdateAt.id =  6}
-        if(dataConfigRender.note){ dataConfigRender.note.id =  7}
-        if(dataConfigRender.tags){ dataConfigRender.tags.id =  8}
-        if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 9}
-        if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  10}
-        if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 11}
+          // gán id cho phần tử để sắp xếp bảng
+          if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
+          if(dataConfigRender.lastName){dataConfigRender.lastName.id = 1}
+          if(dataConfigRender.email){  dataConfigRender.email.id = 2}
+          if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  3}
+          if(dataConfigRender.phone){ dataConfigRender.phone.id =  4}
+          if(dataConfigRender.createAt){ dataConfigRender.createAt.id =  5}
+          if(dataConfigRender.lastUpdateAt){ dataConfigRender.lastUpdateAt.id =  6}
+          if(dataConfigRender.note){ dataConfigRender.note.id =  7}
+          if(dataConfigRender.tags){ dataConfigRender.tags.id =  8}
+          if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 9}
+          if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  10}
+          if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 11}
 
-        //chuyển đổi từ object về mảng
+        //convert from object to array
         const newArr = []
         for(let key in dataConfigRender){
           newArr.push(dataConfigRender[key])
@@ -411,7 +411,8 @@ function Customers(){
                     phone: <Button plain>{data.phone}</Button>,
                     createAt: handleGetCurrentTime(),
                     note: data.note,
-                    lastName: <Button plain>{data.lastName}</Button>
+                    lastName: <Button plain>{data.lastName}</Button>,
+                    numberOfOrders: '0 orders'
                 }
                 if(newData){               
                     dataCustomers.push(newData);
@@ -531,6 +532,8 @@ function Customers(){
         values.email = "";
         values.phone = 0;
         values.note = "";
+        values.lastName = "";
+        setSelected('Account active');
     }
 
     const handleFiltersQueryChange = useCallback(function (value){
