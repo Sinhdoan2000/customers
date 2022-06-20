@@ -36,7 +36,7 @@ function Customers(){
           note: "",
           tags: "",
           acceptsMarketing: "",
-          numberOfOrders: "",
+          numberOfOrders: "0 orders",
           shopifyCustomerid: "",
           lastName: ""
         },
@@ -52,7 +52,7 @@ function Customers(){
           note: "",
           tags: "",
           acceptsMarketing: "",
-          numberOfOrders: "",
+          numberOfOrders: "0 orders",
           shopifyCustomerid: "",
           lastName: ""
         },
@@ -251,6 +251,7 @@ function Customers(){
       }else{
         // gán id cho phần tử để sắp xếp bảng
         if(dataConfigRender.firstName){ dataConfigRender.firstName.id = 0}
+        if(dataConfigRender.lastName){dataConfigRender.lastName.id = 1}
         if(dataConfigRender.email){  dataConfigRender.email.id = 2}
         if(dataConfigRender.accountStatus){ dataConfigRender.accountStatus.id =  3}
         if(dataConfigRender.phone){ dataConfigRender.phone.id =  4}
@@ -261,7 +262,6 @@ function Customers(){
         if(dataConfigRender.acceptsMarketing){ dataConfigRender.acceptsMarketing.id = 9}
         if(dataConfigRender.numberOfOrders){ dataConfigRender.numberOfOrders.id =  10}
         if(dataConfigRender.shopifyCustomerId){dataConfigRender.shopifyCustomerId.id = 11}
-        if(dataConfigRender.lastName){dataConfigRender.lastName.id = 1}
 
         //chuyển đổi từ object về mảng
         const newArr = []
