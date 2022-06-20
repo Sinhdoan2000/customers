@@ -490,6 +490,15 @@ function Customers(){
                             id="email"
                             error={touched.email && errors.email}
                           />  
+                          <TextField
+                            label="Notes"
+                            type="text"
+                            id="note"
+                            value={values.note}
+                            onChange={handleChangeRequired}
+                            error={touched.note && errors.note}
+                            multiline={5}
+                          />
                         </Grid.Cell>
                         <Grid.Cell columnSpan={{xs: 6, sm: 3, md: 3, lg: 3, xl: 3}}>
                           <Select
@@ -508,15 +517,7 @@ function Customers(){
                           />  
                         </Grid.Cell>
                       </Grid>
-                      <TextField
-                            label="Notes"
-                            type="text"
-                            id="note"
-                            value={values.note}
-                            onChange={handleChangeRequired}
-                            error={touched.note && errors.note}
-                            multiline={5}
-                      />
+                      
                     </FormLayout>
                   </Form>
                 </TextContainer>
